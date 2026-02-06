@@ -1,5 +1,6 @@
 package com.rbac.service
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import com.rbac.dto.OrderDto
 import com.rbac.dto.OrderQueryDto
@@ -18,7 +19,7 @@ class OrderService : ServiceImpl<OrderMapper, Order>() {
      * 根据查询条件查询订单列表
      */
     fun queryOrders(query: OrderQueryDto): List<Order> {
-        val queryWrapper = lambdaQuery()
+        val queryWrapper = KtQueryWrapper(Order::class.java)
         
         // 如果有订单号，按订单号查询
         query.orderNo?.takeIf { it.isNotBlank() }?.let {
@@ -30,9 +31,9 @@ class OrderService : ServiceImpl<OrderMapper, Order>() {
             queryWrapper.eq(Order::userId, it)
         }
         
-        return queryWrapper
-            .orderByDesc(Order::createdTime)
-            .list()
+        queryWrapper.orderByDesc(Order::createdTime)
+        
+        return baseMapper.selectList(queryWrapper)
     }
     
     /**
@@ -40,10 +41,11 @@ class OrderService : ServiceImpl<OrderMapper, Order>() {
      * ShardingSphere 会根据 user_id 自动路由到对应的分表
      */
     fun listByUserId(userId: Long): List<Order> {
-        return lambdaQuery()
+        val queryWrapper = KtQueryWrapper(Order::class.java)
             .eq(Order::userId, userId)
             .orderByDesc(Order::createdTime)
-            .list()
+        
+        return baseMapper.selectList(queryWrapper)
     }
     
     /**
@@ -51,9 +53,10 @@ class OrderService : ServiceImpl<OrderMapper, Order>() {
      * 注意：如果不带分片键查询，会扫描所有分表
      */
     fun getByOrderNo(orderNo: String): Order? {
-        return lambdaQuery()
+        val queryWrapper = KtQueryWrapper(Order::class.java)
             .eq(Order::orderNo, orderNo)
-            .one()
+        
+        return baseMapper.selectOne(queryWrapper)
     }
     
     /**

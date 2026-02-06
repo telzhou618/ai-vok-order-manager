@@ -66,6 +66,8 @@ logging:
   level:
     root: INFO
     com.rbac: DEBUG
+    # 开启 dynamic-datasource 日志，查看数据源切换
+    com.baomidou.dynamic.datasource: DEBUG
 
 # sharding
 sharding:
