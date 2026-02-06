@@ -1,0 +1,76 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: rbac-admin
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost:3306/rbac_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: root
+      connection-timeout: 30000
+      maximum-pool-size: 20
+      minimum-idle: 8
+  sql:
+    init:
+      mode: never
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+  # Redis 配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:  # 如果 Redis 设置了密码，在这里填写
+      database: 0
+      timeout: 10s
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+# MyBatis-Plus
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    # 使用 SLF4J 日志实现，通过 logback 配置控制输出内容
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+# Sa-Token
+sa-token:
+  token-name: satoken
+  timeout: 2592000
+  is-concurrent: true
+  is-share: false
+  token-style: uuid
+  is-log: false
+
+# Vaadin
+vaadin:
+  launch-browser: true
+  pnpm:
+    enable: true
+  # 配置白名单包，加速启动（只扫描这些包）
+  whitelisted-packages: com.rbac,com.vaadin,org.vaadin
+# log
+logging:
+  level:
+    root: INFO
+    com.rbac: DEBUG
+
+# sharding
+sharding:
+  show-sql: false
+  sharding-size: 2
+  table-rule-configs:
+    - logic-table-name: order
+      sharding-column: user_id
