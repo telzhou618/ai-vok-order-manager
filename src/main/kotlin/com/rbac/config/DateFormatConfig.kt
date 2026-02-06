@@ -22,8 +22,8 @@ import java.time.format.DateTimeFormatter
 class DateFormatConfig {
 
     companion object {
-        const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
-        const val DATE_PATTERN = "yyyy-MM-dd"
+        private const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
+        private const val DATE_PATTERN = "yyyy-MM-dd"
         val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)
         val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN)
     }
