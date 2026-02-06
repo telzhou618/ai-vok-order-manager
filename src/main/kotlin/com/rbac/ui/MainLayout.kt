@@ -10,7 +10,6 @@ import com.rbac.service.SysUserService
 import com.rbac.service.ThemeService
 import com.rbac.ui.dashboard.DashboardView
 import com.rbac.ui.order.OrderListView
-import com.rbac.ui.user.UserListView
 import com.rbac.util.NotifyUtil
 import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.applayout.AppLayout
@@ -88,17 +87,8 @@ class MainLayout(
 
     private fun createDrawer() {
         val nav = SideNav()
-
-        // 首页 - 所有登录用户都可以访问
         nav.addItem(SideNavItem("首页", DashboardView::class.java, VaadinIcon.DASHBOARD.create()))
-
-        // 订单管理 - 暂不控制权限
         nav.addItem(SideNavItem("订单管理", OrderListView::class.java, VaadinIcon.INVOICE.create()))
-
-        // 用户管理 - 需要 system:user:view 权限
-        if (StpUtil.hasPermission("system:user:view")) {
-            nav.addItem(SideNavItem("用户管理", UserListView::class.java, VaadinIcon.USER.create()))
-        }
         addToDrawer(nav)
     }
 
