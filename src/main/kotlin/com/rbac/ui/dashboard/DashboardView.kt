@@ -4,7 +4,7 @@ import com.rbac.entity.Order
 import com.rbac.service.DashboardService
 import com.rbac.service.OrderService
 import com.rbac.ui.MainLayout
-import com.rbac.util.formatDateTime
+import com.rbac.util.LocalDateUtil
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.html.H2
@@ -152,7 +152,7 @@ class DashboardView(
             addColumn { orderService.toDto(it).payTypeText }.setHeader("支付方式").setAutoWidth(true)
             addColumn { orderService.toDto(it).sourceTypeText }.setHeader("订单来源").setAutoWidth(true)
             addColumn { order ->
-                formatDateTime(order.createdTime)
+                LocalDateUtil.formatDateTime(order.createdTime)
             }.setHeader("创建时间").setAutoWidth(true)
 
             // 获取最近10条订单

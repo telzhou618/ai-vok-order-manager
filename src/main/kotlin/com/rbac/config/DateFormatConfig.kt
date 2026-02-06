@@ -24,8 +24,8 @@ class DateFormatConfig {
     companion object {
         private const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
         private const val DATE_PATTERN = "yyyy-MM-dd"
-        val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)
-        val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN)
+        private val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)
+        private val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN)
     }
 
     @Bean
