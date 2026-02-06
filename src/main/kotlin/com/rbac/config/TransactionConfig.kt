@@ -1,6 +1,5 @@
 package com.rbac.config
 
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -14,17 +13,17 @@ import javax.sql.DataSource
 class TransactionConfig {
 
     @Primary
-    @Bean("normalTransactionManager")
-    fun normalTransactionManager(
-        @Qualifier("masterDataSource") dataSource: DataSource
+    @Bean
+    fun masterTransactionManager(
+        masterDataSource: DataSource
     ): PlatformTransactionManager {
-        return DataSourceTransactionManager(dataSource)
+        return DataSourceTransactionManager(masterDataSource)
     }
 
-    @Bean("shardingTransactionManager")
+    @Bean
     fun shardingTransactionManager(
-        @Qualifier("shardingDataSource") dataSource: DataSource
+        shardingDataSource: DataSource
     ): PlatformTransactionManager {
-        return DataSourceTransactionManager(dataSource)
+        return DataSourceTransactionManager(shardingDataSource)
     }
 }

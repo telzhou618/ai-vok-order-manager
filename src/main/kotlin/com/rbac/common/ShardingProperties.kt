@@ -1,4 +1,4 @@
-package com.rbac.config
+package com.rbac.common
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
