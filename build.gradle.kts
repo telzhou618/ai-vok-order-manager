@@ -34,7 +34,7 @@ dependencies {
     // 动态数据源
     implementation("com.baomidou:dynamic-datasource-spring-boot-starter:4.2.0")
     // ShardingSphere
-    implementation("org.apache.shardingsphere:shardingsphere-jdbc-core:5.4.0")
+    implementation("org.apache.shardingsphere:shardingsphere-jdbc-core:5.0.0")
     // 连接池
     implementation("com.zaxxer:HikariCP:5.0.1")
 
