@@ -216,6 +216,9 @@ class OrderListView(
     }
 
     private fun showOrderDetail(order: OrderDto) {
-        OrderDetailDialog(order).open()
+        // 传递订单ID和用户ID作为查询参数
+        ui.ifPresent { 
+            it.navigate("order-detail?orderId=${order.id}&userId=${order.userId}") 
+        }
     }
 }
