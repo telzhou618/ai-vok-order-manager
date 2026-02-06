@@ -32,7 +32,7 @@ dependencies {
     // MySQL
     implementation("com.mysql:mysql-connector-j:8.2.0")
     // 动态数据源
-    implementation("com.baomidou:dynamic-datasource-spring-boot-starter:4.2.0")
+    implementation("com.baomidou:dynamic-datasource-spring-boot3-starter:4.5.0")
     // ShardingSphere
     implementation("org.apache.shardingsphere:shardingsphere-jdbc-core:5.0.0")
     // 连接池

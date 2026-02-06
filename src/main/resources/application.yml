@@ -71,7 +71,7 @@ logging:
 
 # sharding
 sharding:
-  show-sql: false
+  show-sql: true
   sharding-size: 2
   table-rule-configs:
     - logic-table-name: order
