@@ -5,6 +5,7 @@ import com.rbac.entity.SysOperationLog
 import com.rbac.service.DashboardService
 import com.rbac.service.SysOperationLogService
 import com.rbac.ui.MainLayout
+import com.rbac.util.formatDateTime
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.html.H2
@@ -97,7 +98,7 @@ class DashboardView(
             addColumn { it.ip }.setHeader("IP").setAutoWidth(true)
             addColumn { it.executeTime }.setHeader("耗时(ms)").setAutoWidth(true)
             addColumn { log ->
-                DateFormatConfig.formatDateTime(log.createTime)
+                formatDateTime(log.createTime)
             }.setHeader("操作时间").setAutoWidth(true)
 
             setItems(logService.getRecentLogs(10))
