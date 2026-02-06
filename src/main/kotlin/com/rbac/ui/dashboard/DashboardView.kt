@@ -1,9 +1,8 @@
 package com.rbac.ui.dashboard
 
-import com.rbac.config.DateFormatConfig
-import com.rbac.entity.SysOperationLog
+import com.rbac.entity.Order
 import com.rbac.service.DashboardService
-import com.rbac.service.SysOperationLogService
+import com.rbac.service.OrderService
 import com.rbac.ui.MainLayout
 import com.rbac.util.formatDateTime
 import com.vaadin.flow.component.grid.Grid
@@ -19,14 +18,17 @@ import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import com.vaadin.flow.router.RouteAlias
 import com.vaadin.flow.theme.lumo.LumoUtility
+import java.text.DecimalFormat
 
 @Route("", layout = MainLayout::class)
 @RouteAlias("dashboard", layout = MainLayout::class)
 @PageTitle("首页")
 class DashboardView(
     private val dashboardService: DashboardService,
-    private val logService: SysOperationLogService
+    private val orderService: OrderService,
 ) : VerticalLayout() {
+
+    private val moneyFormat = DecimalFormat("#,##0.00")
 
     init {
         setSizeFull()
@@ -35,75 +37,129 @@ class DashboardView(
 
         val data = dashboardService.getDashboardData()
 
-        // 统计卡片容器
-        val statsLayout = HorizontalLayout().apply {
+        // 订单统计卡片容器
+        add(H3("订单统计"))
+        val orderStatsLayout = HorizontalLayout().apply {
             width = "100%"
             isSpacing = true
         }
 
-        // 用户统计卡片
-        statsLayout.add(
+        // 订单总数卡片
+        orderStatsLayout.add(
             createStatCard(
-                title = "用户总数",
-                value = data.userCount.toString(),
-                icon = VaadinIcon.USER,
+                title = "订单总数",
+                value = data.totalOrderCount.toString(),
+                icon = VaadinIcon.INVOICE,
                 colorTheme = "primary"
             )
         )
 
-        // 角色统计卡片
-        statsLayout.add(
+        // 今日订单卡片
+        orderStatsLayout.add(
             createStatCard(
-                title = "角色总数",
-                value = data.roleCount.toString(),
-                icon = VaadinIcon.GROUP,
+                title = "今日订单",
+                value = data.todayOrderCount.toString(),
+                icon = VaadinIcon.CALENDAR_CLOCK,
                 colorTheme = "success"
             )
         )
 
-        // 权限统计卡片
-        statsLayout.add(
+        // 待付款订单卡片
+        orderStatsLayout.add(
             createStatCard(
-                title = "权限节点数",
-                value = data.permCount.toString(),
-                icon = VaadinIcon.LOCK,
-                colorTheme = "contrast"
-            )
-        )
-
-        // 日志统计卡片
-        statsLayout.add(
-            createStatCard(
-                title = "日志总数",
-                value = data.logCount.toString(),
-                icon = VaadinIcon.RECORDS,
+                title = "待付款",
+                value = data.pendingPaymentCount.toString(),
+                icon = VaadinIcon.CLOCK,
                 colorTheme = "error"
             )
         )
 
-        add(statsLayout)
+        // 已完成订单卡片
+        orderStatsLayout.add(
+            createStatCard(
+                title = "已完成",
+                value = data.completedOrderCount.toString(),
+                icon = VaadinIcon.CHECK_CIRCLE,
+                colorTheme = "contrast"
+            )
+        )
 
-        // 最近操作日志标题
-        add(H3("最近操作日志").apply {
+        add(orderStatsLayout)
+
+        // 销售额统计卡片容器
+        add(H3("销售统计").apply {
+            addClassNames(LumoUtility.Margin.Top.MEDIUM)
+        })
+        val salesStatsLayout = HorizontalLayout().apply {
+            width = "100%"
+            isSpacing = true
+        }
+
+        // 总销售额卡片
+        salesStatsLayout.add(
+            createStatCard(
+                title = "总销售额",
+                value = "¥${moneyFormat.format(data.totalSalesAmount)}",
+                icon = VaadinIcon.DOLLAR,
+                colorTheme = "primary"
+            )
+        )
+
+        // 今日销售额卡片
+        salesStatsLayout.add(
+            createStatCard(
+                title = "今日销售额",
+                value = "¥${moneyFormat.format(data.todaySalesAmount)}",
+                icon = VaadinIcon.MONEY,
+                colorTheme = "success"
+            )
+        )
+
+        // 总下单用户数卡片
+        salesStatsLayout.add(
+            createStatCard(
+                title = "总下单用户数",
+                value = data.totalOrderUserCount.toString(),
+                icon = VaadinIcon.USERS,
+                colorTheme = "contrast"
+            )
+        )
+
+        // 今日下单用户数卡片
+        salesStatsLayout.add(
+            createStatCard(
+                title = "今日下单用户数",
+                value = data.todayOrderUserCount.toString(),
+                icon = VaadinIcon.USER_CHECK,
+                colorTheme = "error"
+            )
+        )
+
+        add(salesStatsLayout)
+
+        // 最近订单标题
+        add(H3("最近订单").apply {
             addClassNames(LumoUtility.Margin.Top.MEDIUM)
         })
 
-        // 日志表格
-        val grid = Grid(SysOperationLog::class.java, false).apply {
-            addColumn { it.username }.setHeader("用户").setAutoWidth(true)
-            addColumn { it.module }.setHeader("模块").setAutoWidth(true)
-            addColumn { it.operation }.setHeader("操作").setAutoWidth(true)
-            addColumn { it.responseCode }.setHeader("状态码").setAutoWidth(true)
-            addColumn { it.responseMsg }.setHeader("响应消息").setAutoWidth(true)
-            addColumn { it.ip }.setHeader("IP").setAutoWidth(true)
-            addColumn { it.executeTime }.setHeader("耗时(ms)").setAutoWidth(true)
-            addColumn { log ->
-                formatDateTime(log.createTime)
-            }.setHeader("操作时间").setAutoWidth(true)
+        // 订单表格
+        val orderGrid = Grid(Order::class.java, false).apply {
+            addColumn { it.orderNo }.setHeader("订单号").setAutoWidth(true)
+            addColumn { it.userId }.setHeader("用户ID").setAutoWidth(true)
+            addColumn { orderService.toDto(it).orderStatusText }.setHeader("订单状态").setAutoWidth(true)
+            addColumn { orderService.toDto(it).payStatusText }.setHeader("支付状态").setAutoWidth(true)
+            addColumn { "¥${moneyFormat.format(it.actualAmount)}" }.setHeader("实付金额").setAutoWidth(true)
+            addColumn { orderService.toDto(it).payTypeText }.setHeader("支付方式").setAutoWidth(true)
+            addColumn { orderService.toDto(it).sourceTypeText }.setHeader("订单来源").setAutoWidth(true)
+            addColumn { order ->
+                formatDateTime(order.createdTime)
+            }.setHeader("创建时间").setAutoWidth(true)
 
-            setItems(logService.getRecentLogs(10))
+            // 获取最近10条订单
+            val recentOrders = orderService.list().sortedByDescending { it.createdTime }.take(10)
+            setItems(recentOrders)
         }
-        add(grid)
+        add(orderGrid)
     }
 
     /**
